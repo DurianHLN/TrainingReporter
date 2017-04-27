@@ -1,4 +1,5 @@
-name: Blank2
+name: Training Reporter
 services: []
 startup_form: Form1
 runtime_options: {server_version: python2-sandbox}
+renamed: true
