@@ -50,19 +50,9 @@ class Name(object):
         return 0
       elif string1 > string2:
         return 1
-    comparison = Name.ranks[self.rank] - Name.ranks[otherName.rank]
-    if comparison != 0:
-      return comparison
-    else:
-      comparison = compareStrings(self.last_name, otherName.last_name)
-      if comparison != 0:
-        return comparison
-      else:
-        comparison = compareStrings(self.first_initial, otherName.first_initial)
-        if comparison != 0:
-          return comparison
-        else:
-          comparison = compareStrings(self.middle_initial, otherName.middle_initial)
-          return comparison
+    return (Name.ranks[self.rank] - Name.ranks[otherName.rank] or
+            compareStrings(self.last_name, otherName.last_name) or
+            compareStrings(self.first_initial, otherName.first_initial) or
+            compareStrings(self.middle_initial, otherName.middle_initial))
 
   

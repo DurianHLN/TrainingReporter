@@ -10,7 +10,7 @@ class MainForm (MainFormTemplate):
     
     self.ta_required_attendees.placeholder = "Cpl Wason\n1stLt C. Russell\nPFC Young, A. A."
     self.ta_non_required_attendees.placeholder = "LCpl Nguyen, D. L.\nPvt Akif"
-    self.ta_absent.placeholder = "Cpl Page (LOA)\nPvt Evans, C. (Unexcused)\nLCpl Horta(Excused)"
+    self.ta_absent.placeholder = "Cpl Page\nPvt Evans, C.\nLCpl Horta"
     
     self.ta_training.placeholder = "We went to Athira and waited around for 30 min. ENDEX"
     self.ta_comments.placeholder = "LCpl Nguyen got the Marlboros instead of the Camels"
@@ -35,32 +35,39 @@ class MainForm (MainFormTemplate):
       return generate_text_block(self.l_location, location_text)
     location = generate_location()
     
+    def generate_members():
+      sort_text_area(self.ta_required_attendees)
+      required_attendees = generate_text_block(self.l_required_attendees, self.ta_required_attendees)
+      
+      sort_text_area(self.ta_non_required_attendees)
+      non_required_attendees = generate_text_block(self.l_non_required_attendees, self.ta_non_required_attendees.text)
+      
+      sort_text_area(self.ta_absent)
+      absent = generate_text_block(self.l_absent, self.ta_absent)
+      
+      return required_attendees + non_required_attendees + absent
     try:
-      required_attendees = generate_text_block(self.l_required_attendees,
-                                               generate_sorted_member_list(self.ta_required_attendees.text.splitlines()))
-      non_required_attendees = generate_text_block(self.l_non_required_attendees,
-                                                   generate_sorted_member_list(self.ta_non_required_attendees.text.splitlines()))
-      absent = generate_text_block(self.l_absent,
-                                   generate_sorted_member_list(self.ta_absent.text.splitlines()))
-    except Exception, e:
-      alert(e.args)
-      return
+      members = generate_members()
+    except FormatError:
+      return;
+    
     training_conducted = generate_text_block(self.l_training, self.ta_training)
     comments = generate_text_block(self.l_comments, self.ta_comments)
     sustains = generate_text_block(self.l_sustains, self.ta_sustains)
-    signature = "Respectfully submitted,\n\n" + self.ta_signature.text
+    signature = "Respectfully submitted,{}{}".format("\n"*3, self.ta_signature.text)
     
     training_report = (unit + type_of_training + date_conducted + time_conducted + location
-                      + required_attendees + non_required_attendees + absent
+                      + members
                       + training_conducted + comments + sustains + signature)
     
-    training_report_link = generate_text_block("Training Report Link", "(Link here)")
-    fillins = generate_text_block("Fill-Ins", generate_sorted_member_list(self.ta_non_required_attendees.text.splitlines()))
+    training_report_link = generate_text_block("Training Report Link", "[color=red](Link here)[/color]")
+    fillins = generate_text_block("Fill-Ins", self.ta_non_required_attendees)
     fillin_report = (unit + type_of_training + date_conducted + time_conducted 
                      + training_report_link + fillins)
     
     self.ta_training_report.text = training_report
     self.ta_fillin_report.text = fillin_report
+    
     self.ta_training_report.visible = True
     self.ta_fillin_report.visible = True
 
@@ -81,3 +88,23 @@ class MainForm (MainFormTemplate):
 
   def tb_date_show (self, **event_args):
     self.tb_date.text = time.strftime("%d%b%y").upper()
+
+  def ta_required_attendees_lost_focus (self, **event_args):
+    try:
+      sort_text_area(self.ta_required_attendees)
+    except FormatError:
+      pass
+    
+  def ta_non_required_attendees_lost_focus (self, **event_args):
+    try:
+      sort_text_area(self.ta_non_required_attendees)
+    except FormatError:
+      pass
+    
+  def ta_absent_lost_focus (self, **event_args):
+    try:
+      sort_text_area(self.ta_absent)
+    except FormatError:
+      pass
+
+
