@@ -24,8 +24,9 @@ def generate_text_block(header, body):
   return text_block.format(title(header), body)
 
 def generate_sorted_member_list(members):
-  if not members:
+  if not members or members[0] == "N/A":
     return "N/A"
+  
   def trim_name(name, *delimiters):
     for delimiter in delimiters:
       name = name.replace(delimiter, "")
