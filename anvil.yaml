@@ -1,5 +1,5 @@
 name: Training Reporter
 services: []
-startup_form: Form1
+startup_form: MainForm
 runtime_options: {server_version: python2-sandbox}
 renamed: true
