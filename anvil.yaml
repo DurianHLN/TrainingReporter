@@ -1,4 +1,4 @@
-name: Training Reporter
+name: TrainingReporter
 services: []
 startup_form: MainForm
 runtime_options: {server_version: python2-sandbox}
