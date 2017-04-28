@@ -5,15 +5,6 @@ from NameFormat import Name
 
 def title(string):
   return "[b]" + string.upper() + "[/b]"
-
-def color_excuse(reason):
-  reason = reason.upper()
-  if "UN" in reason:
-    return "[color=red]" + reason + "[/color]"
-  elif "EXCUSED" in reason or "LOA" in reason:
-    return "[color=green]" + reason + "[/color]"
-  else:
-    return "[color=yellow]" + reason + "[/color]"
       
 def generate_text_block(header, body):
   if isinstance(header, Label):
@@ -23,21 +14,17 @@ def generate_text_block(header, body):
   text_block = "{}\n{}\n\n\n"
   return text_block.format(title(header), body)
 
-def generate_sorted_member_list(members, include_reason=False):
+def generate_sorted_member_list(members):
   def trim_name(name, delimiter):
     return name if delimiter not in name else name[:-1]
   member_names = []
   
   for member_string in members:
     member_string = member_string.split()
-    if include_reason:
-      reason = color_excuse(member_string[len(member_string)-1])
-      if "(" not in reason:
-        raise Exception("You must add a reason in parentheses after the absentee's name!")
-      member_string = member_string[:-1]
+
     rank = member_string[0]
-    member_length = len(member_string)
     #UGLINESS!!!!!!!!!!!
+    member_length = len(member_string)
     if member_length == 2:
       last_name = member_string[1]
       name = Name(rank, last_name)
@@ -62,8 +49,6 @@ def generate_sorted_member_list(members, include_reason=False):
     else:
       raise Exception(" ".join(member_string) + " in invalid format!")
       
-    if include_reason:
-      name.reason = reason
     member_names.append(name)
     
   member_names.sort()

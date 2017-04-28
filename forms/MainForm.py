@@ -37,11 +37,11 @@ class MainForm (MainFormTemplate):
     
     try:
       required_attendees = generate_text_block(self.l_required_attendees,
-                                              generate_sorted_member_list(self.ta_required_attendees.text.splitlines()))
+                                               generate_sorted_member_list(self.ta_required_attendees.text.splitlines()))
       non_required_attendees = generate_text_block(self.l_non_required_attendees,
-                                                  generate_sorted_member_list(self.ta_non_required_attendees.text.splitlines()))
+                                                   generate_sorted_member_list(self.ta_non_required_attendees.text.splitlines()))
       absent = generate_text_block(self.l_absent,
-                                  generate_sorted_member_list(self.ta_absent.text.splitlines(), include_reason=True))
+                                   generate_sorted_member_list(self.ta_absent.text.splitlines()))
     except Exception, e:
       alert(e.args)
       return
