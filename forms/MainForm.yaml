@@ -272,6 +272,13 @@ components:
       bold: false, underline: false}
     name: ta_fillin_report
     layout_properties: {grid_position: 'EJYVDW,KJAKTZ'}
+  - type: Label
+    properties: {width: default, align: right, border: '', foreground: '', visible: true,
+      text: Created by github.com/DurianHLN, font_size: null, font: '', spacing_above: small,
+      icon_align: left, spacing_below: small, italic: false, background: '', bold: false,
+      underline: false, icon: ''}
+    name: label_1
+    layout_properties: {grid_position: 'TOKYPM,IJZYCO'}
 - type: Image
   properties: {width: default, align: center, height: 200, border: '', foreground: '',
     visible: true, spacing_above: small, source: 'https://media.defense.gov/2016/Apr/12/2001514028/670/394/0/160407-F-DD647-001.JPG',
