@@ -43,8 +43,7 @@ class MainForm (MainFormTemplate):
       absent = generate_text_block(self.l_absent,
                                   generate_sorted_member_list(self.ta_absent.text.splitlines(), include_reason=True))
     except Exception, e:
-      alert(str(e))
-      raise e
+      alert(e.args)
       return
     training_conducted = generate_text_block(self.l_training, self.ta_training)
     comments = generate_text_block(self.l_comments, self.ta_comments)
@@ -70,20 +69,15 @@ class MainForm (MainFormTemplate):
       return
     if not self.ta_signature.text:
       self.ta_signature.text = "\n\n" + self.tb_unit.text
-      
+
     dashes = self.tb_unit.text.count("-")
-    if dashes == 0:
-      self.tb_training_type.text = "Scheduled Platoon Training"
-    elif dashes == 1:
-      self.tb_training_type.text = "Scheduled Squad Training"
-    elif dashes == 2:
-      self.tb_training_type.text = "Scheduled Fireteam Training"
+    training_types = {0: "Platoon", 1: "Squad", 2: "Fireteam"}
+    if "4" in self.tb_unit.text:
+      training_types[1] = "Section"
+      training_types[2] = "Squad"
+      training_types[3] = "Fireteam"
+    
+    self.tb_training_type.text = "Scheduled {} Training".format(training_types.get(dashes, "?"))
 
   def tb_date_show (self, **event_args):
     self.tb_date.text = time.strftime("%d%b%y").upper()
-
-  
-
-
-
-

@@ -32,6 +32,8 @@ def generate_sorted_member_list(members, include_reason=False):
     member_string = member_string.split()
     if include_reason:
       reason = color_excuse(member_string[len(member_string)-1])
+      if "(" not in reason:
+        raise Exception("You must add a reason in parentheses after the absentee's name!")
       member_string = member_string[:-1]
     rank = member_string[0]
     member_length = len(member_string)
@@ -66,4 +68,4 @@ def generate_sorted_member_list(members, include_reason=False):
     
   member_names.sort()
       
-  return "\n".join(member_names)
+  return "\n".join(str(member_name) for member_name in member_names)
