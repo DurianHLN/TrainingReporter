@@ -6,6 +6,15 @@ from NameFormat import Name
 def title(string):
   return "[b]" + string.upper() + "[/b]"
       
+def sort_text_area(text_area):
+  try:
+    text_area.text = generate_sorted_member_list(text_area.text.splitlines())
+    text_area.foreground = "BLACK"
+  except (FormatError, KeyError) as e:
+    text_area.foreground = "RED"
+    alert(e.args)
+    raise e if isinstance(e, FormatError) else FormatError(e.args[0])
+    
 def generate_text_block(header, body):
   if isinstance(header, Label):
     header = header.text
@@ -15,42 +24,40 @@ def generate_text_block(header, body):
   return text_block.format(title(header), body)
 
 def generate_sorted_member_list(members):
-  def trim_name(name, delimiter):
-    return name if delimiter not in name else name[:-1]
+  if not members or members[0] == "N/A":
+    return "N/A"
+  
+  def trim_name(name, *delimiters):
+    for delimiter in delimiters:
+      name = name.replace(delimiter, "")
+    return name
+  def is_initial(string):
+    return len(string) == 1
   member_names = []
   
   for member_string in members:
     member_string = member_string.split()
-
-    rank = member_string[0]
-    #UGLINESS!!!!!!!!!!!
-    member_length = len(member_string)
-    if member_length == 2:
-      last_name = member_string[1]
-      name = Name(rank, last_name)
-    elif member_length == 3:
-      if "." not in member_string[1]:
-        last_name = trim_name(member_string[1], ",")
-        first_initial = trim_name(member_string[2], ".")
-      else:
-        first_initial = trim_name(member_string[1], ".")
-        last_name = member_string[2]
-      name = Name(rank, last_name, first_initial)
-    elif member_length == 4:
-      if "." not in member_string[1]:
-        last_name = trim_name(member_string[1], ",")
-        first_initial = trim_name(member_string[2], ".")
-        middle_initial = trim_name(member_string[3], ".")
-      else:
-        first_initial = trim_name(member_string[1], ".")
-        middle_initial = trim_name(member_string[2], ".")
-        last_name = member_string[3]
-      name = Name(rank, last_name, first_initial, middle_initial)
-    else:
-      raise Exception(" ".join(member_string) + " in invalid format!")
+    if len(member_string) <= 1 or len(member_string) > 4:
+      raise FormatError(" ".join(member_string) + " in invalid format!")
       
-    member_names.append(name)
+    name_params = {"rank": Name.checkRank(member_string[0]), "last_name": None,
+                   "first_initial": None, "middle_initial": None}
+    
+    for token in member_string:
+      token = trim_name(token, ",", ".")
+      if is_initial(token):
+        initial = "first_initial" if not name_params.get("first_initial") else "middle_initial"
+        name_params[initial] = token
+      else:
+        name_params["last_name"] = token
+
+    member_names.append(Name(name_params.get("rank"), name_params.get("last_name"), name_params.get("first_initial"), name_params.get("middle_initial")))
     
   member_names.sort()
       
   return "\n".join(str(member_name) for member_name in member_names)
+
+class FormatError(Exception):
+  """Exception raised for inputs that cannot be formatted"""
+  def __init__(self, msg):
+    self.msg = msg

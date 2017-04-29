@@ -8,6 +8,12 @@ class Name(object):
       "LCpl": 21,"HN": 22, "PFC": 23,"HA": 24, "Pvt": 25, "HR": 26, 
       "SNA": 27}
   
+  @staticmethod
+  def checkRank(rank):
+      if (Name.ranks.get(rank) == None):
+        raise KeyError(rank + " is not a valid rank!")
+      return rank
+  
   def __init__(self, rank, last_name, first_inital="", middle_initial=""):
     self.rank = rank
     self.last_name = last_name
@@ -37,11 +43,9 @@ class Name(object):
     return self.compare(other) > 0
   
   def compare(self, otherName):
-    def checkRank(rank):
-      if (Name.ranks.get(rank) == None):
-        raise KeyError(rank + " is not a valid rank!")
-    checkRank(self.rank)
-    checkRank(otherName.rank)
+    
+    Name.checkRank(self.rank)
+    Name.checkRank(otherName.rank)
     
     def compareStrings(string1, string2):
       if string1 < string2:
@@ -50,19 +54,9 @@ class Name(object):
         return 0
       elif string1 > string2:
         return 1
-    comparison = Name.ranks[self.rank] - Name.ranks[otherName.rank]
-    if comparison != 0:
-      return comparison
-    else:
-      comparison = compareStrings(self.last_name, otherName.last_name)
-      if comparison != 0:
-        return comparison
-      else:
-        comparison = compareStrings(self.first_initial, otherName.first_initial)
-        if comparison != 0:
-          return comparison
-        else:
-          comparison = compareStrings(self.middle_initial, otherName.middle_initial)
-          return comparison
+    return (Name.ranks[self.rank] - Name.ranks[otherName.rank] or
+            compareStrings(self.last_name, otherName.last_name) or
+            compareStrings(self.first_initial, otherName.first_initial) or
+            compareStrings(self.middle_initial, otherName.middle_initial))
 
   
