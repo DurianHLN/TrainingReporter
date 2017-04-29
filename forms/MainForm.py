@@ -67,8 +67,10 @@ class MainForm (MainFormTemplate):
     
     self.ta_training_report.text = training_report
     self.ta_fillin_report.text = fillin_report
-    
+
+    self.l_training_reports.visible = True
     self.ta_training_report.visible = True
+    self.l_fillin_reports.visible = True
     self.ta_fillin_report.visible = True
 
   def tb_unit_lost_focus (self, **event_args):

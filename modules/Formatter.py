@@ -10,10 +10,10 @@ def sort_text_area(text_area):
   try:
     text_area.text = generate_sorted_member_list(text_area.text.splitlines())
     text_area.foreground = "BLACK"
-  except FormatError as e:
+  except (FormatError, KeyError) as e:
     text_area.foreground = "RED"
     alert(e.args)
-    raise e
+    raise e if isinstance(e, FormatError) else FormatError(e.args[0])
     
 def generate_text_block(header, body):
   if isinstance(header, Label):
@@ -37,10 +37,10 @@ def generate_sorted_member_list(members):
   
   for member_string in members:
     member_string = member_string.split()
-    if len(member_string) > 4:
+    if len(member_string) <= 1 or len(member_string) > 4:
       raise FormatError(" ".join(member_string) + " in invalid format!")
       
-    name_params = {"rank": member_string[0], "last_name": None,
+    name_params = {"rank": Name.checkRank(member_string[0]), "last_name": None,
                    "first_initial": None, "middle_initial": None}
     
     for token in member_string:
